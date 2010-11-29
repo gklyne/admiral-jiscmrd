@@ -26,12 +26,23 @@ sys.path.append("..")
 sys.path.append("../..")
 
 import SubmitDatasetUtils
+import ManifestRDFUtils
 import HttpUtils
 from MiscLib import TestUtils
 
-ZipMimeType  =  "application/zip"
-FilePat      =  re.compile("^.*$(?<!\.zip)")
-logger       =  logging.getLogger("SubmitDatasetHandler")
+ZipMimeType          =  "application/zip"
+FilePat              =  re.compile("^.*$(?<!\.zip)")
+Logger               =  logging.getLogger("SubmitDatasetHandler")
+
+ElementCreator       =  "creator"
+ElementIdentifier    =  "identifier"
+ElementTitle         =  "title"
+ElementDescription   =  "description"
+ElementList          =  [ElementCreator,ElementIdentifier,ElementTitle,ElementDescription]
+
+DefaultManifestName  = "manifest.rdf"
+BaseDir              =  "/home/"
+
 
 def processDatasetSubmissionForm(formdata, outputstr):
     """
@@ -40,9 +51,17 @@ def processDatasetSubmissionForm(formdata, outputstr):
     
     formdata    is a dictionary containing parameters from the dataset submission form
     """
-    siloName= "admiral-test"
-    save_stdout = sys.stdout
+    siloName             = "admiral-test"
+    save_stdout          = sys.stdout
 
+    userName             =  SubmitDatasetUtils.getFormParam("user",formdata)
+    userPass             =  SubmitDatasetUtils.getFormParam("pass", formdata)
+    datasetName          =  SubmitDatasetUtils.getFormParam("datId",formdata)  
+    title                =  SubmitDatasetUtils.getFormParam("title",formdata)  
+    description          =  SubmitDatasetUtils.getFormParam("description",formdata)  
+    dirName              =  SubmitDatasetUtils.getFormParam("datDir",formdata)
+    ElementValueList     =  [userName, datasetName, title, description]
+    
     #print repr(formdata)
 
     if outputstr:
@@ -52,11 +71,6 @@ def processDatasetSubmissionForm(formdata, outputstr):
         print "Content-type: text/html"
         print "Cache-control: no-cache"
         print
-
-        datasetName = SubmitDatasetUtils.getFormParam("datId",formdata)   
-        dirName     = SubmitDatasetUtils.getFormParam("datDir",formdata)
-        userName    = SubmitDatasetUtils.getFormParam("user",formdata)
-        userPass    = SubmitDatasetUtils.getFormParam("pass", formdata)
 
         datIDPattern = re.compile("^[a-zA-Z0-9._:-]+$")
         matchedString = datIDPattern.match(datasetName)
@@ -72,12 +86,8 @@ def processDatasetSubmissionForm(formdata, outputstr):
                 SubmitDatasetUtils.INPUT_ERROR,
                 None,
                 "Expecting no trailing '/' on directory name: '"+dirName+"' supplied")
-          
-        zipFileName = os.path.basename(dirName) +".zip"
-        zipFilePath = "/tmp/" + zipFileName
-        logger.debug("datasetName %s, dirName %s, zipFileName %s"%(datasetName,dirName,zipFileName))
-
-        # Set user credentials
+ 
+        # Set user credentials       
         HttpUtils.setRequestUserPass(userName,userPass)
         
         # Check if the dataset already exists
@@ -86,8 +96,17 @@ def processDatasetSubmissionForm(formdata, outputstr):
         # Create a dataset if the dataset does not exist
         if not datasetFound:              
             SubmitDatasetUtils.createDataset(siloName, datasetName)
-            
+                             
+        # Update the local manifest
+        manifestFilePath     = dirName + str(os.path.sep) + DefaultManifestName
+        Logger.debug("Element List = " + repr(ElementList))
+        Logger.debug("Element Value List = " + repr(ElementValueList))
+        updateMetadataInDirectoryBeforeSubmission(manifestFilePath, ElementList, ElementValueList)
+        
         # Zip the selected Directory
+        zipFileName = os.path.basename(dirName) +".zip"
+        zipFilePath = "/tmp/" + zipFileName
+        Logger.debug("datasetName %s, dirName %s, zipFileName %s"%(datasetName,dirName,zipFileName))
         SubmitDatasetUtils.zipLocalDirectory(dirName, FilePat, zipFilePath)
         # Submit zip file to dataset
         try:
@@ -151,10 +170,27 @@ def processDatasetSubmissionForm(formdata, outputstr):
 
     return
 
+def updateMetadataInDirectoryBeforeSubmission(manifestFilePath, elementList, elementValueList) :
+    """
+    Update the metadata RDF with the form data obtained from the dataset submission tool.
+    """
+    Logger.debug("Manifest Path = " + manifestFilePath)
+    inputDict    = ManifestRDFUtils.createDictionary(elementList, elementValueList)   
+    if ManifestRDFUtils.ifFileExists(manifestFilePath):
+        Logger.debug("Manifest File Exists... skipping creation!")
+        manifestDict = ManifestRDFUtils.getDictionaryFromManifest(manifestFilePath, elementList) 
+        if inputDict!= manifestDict:
+            ManifestRDFUtils.updateManifestFile(manifestFilePath, elementList, elementValueList)
+        updatedGraph = ManifestRDFUtils.updateManifestFile(manifestFilePath, elementList, elementValueList)    
+    else:
+        Logger.debug("Creating Manifest File...")
+        ManifestRDFUtils.writeToManifestFile(manifestFilePath, elementList, elementValueList)     
+    return
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     form = cgi.FieldStorage()   # Parse the query
-    os.chdir("/home")           # Base directory for admiral server data
+    os.chdir("/home/")           # Base directory for admiral server data
     processDatasetSubmissionForm(form, sys.stdout)
 
 # End.
