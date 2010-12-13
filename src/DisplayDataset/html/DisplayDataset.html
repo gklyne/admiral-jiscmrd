@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+
+<head>
+    <title>ADMIRAL: Display dataset information</title>
+
+    <!-- TODO: move to separate CSS file -->
+    <style>
+    td {
+        background-color: #FFE;
+    }
+    </style>
+
+    <!-- Import jQuery framework -->
+    <script type="text/javascript" src="../../jQuery/js/jquery-1.4.2.js"></script> 
+
+    <!-- Import jQuery additional libraries -->
+    <script type="text/javascript" src="../../jQuery/jquery.json-2.2.js"></script> 
+
+    <!-- Import treeview plugin -->
+    <link rel="stylesheet" href="../../jQuery/jquery-treeview/jquery.treeview.css" type="text/css" />
+    <script type="text/javascript" src="../../jQuery/jquery-treeview/jquery.treeview.js"></script>
+    
+    <!-- import rdfquery libraries -->
+    <script type="text/javascript" src="../../rdfquery/jquery.uri.js"></script>
+    <script type="text/javascript" src="../../rdfquery/jquery.xmlns.js"></script>
+    <script type="text/javascript" src="../../rdfquery/jquery.curie.js"></script>
+    <script type="text/javascript" src="../../rdfquery/jquery.datatype.js"></script>
+    <script type="text/javascript" src="../../rdfquery/jquery.rdf.js"></script>
+    <script type="text/javascript" src="../../rdfquery/jquery.rdfa.js"></script>
+    <script type="text/javascript" src="../../rdfquery/jquery.datatype.js"></script>
+    <script type="text/javascript" src="../../rdfquery/jquery.rdf.js"></script>
+    <script type="text/javascript" src="../../rdfquery/jquery.rdf.json.js"></script>
+    <script type="text/javascript" src="../../rdfquery/jquery.rdf.xml.js"></script>
+    <script type="text/javascript" src="../../rdfquery/jquery.rdf.turtle.js"></script>
+<!--
+    <script src="../../../rdfquery/jquery.rules.js" type="text/javascript"></script>   
+    <script src="../../../rdfquery/jquery.rules.rdfs.js" type="text/javascript"></script>  
+-->
+ 
+    <!-- Import MochiKit modules: require MochiKit library functions to be fully qualified -->
+    <script type="text/javascript">MochiKit = {__export__: false};</script>
+    <script type="text/javascript" src="../../MochiKit/Base.js"></script>
+    <script type="text/javascript" src="../../MochiKit/Iter.js"></script>
+    <script type="text/javascript" src="../../MochiKit/Logging.js"></script>
+
+    <!-- Import Admiral functions -->
+    <script type="text/javascript" src="../../Admiral/admiral-base.js"></script>
+    <script type="text/javascript" src="../../Admiral/Error.js"></script>
+    <script type="text/javascript" src="../../Admiral/AsyncComputation.js"></script>
+
+    <!-- Import dataset information display code -->
+    <script type="text/javascript" src="../DatasetTree.js"></script>
+    <link rel="stylesheet" href="../css/DisplayDataset.css" type="text/css" />
+    <script type="text/javascript" src="../DisplayDatasetStatus.js"></script>
+    <script type="text/javascript" src="../DisplayDatasetManifest.js"></script>
+
+    <script>
+    // Use jQuery via jQuery(...)
+      jQuery.noConflict();
+    </script>
+
+    <!-- Execute the code -->
+    <script>
+    jQuery(document).ready( function () 
+    {
+        url = document.URL;
+        dirUrl      =   url.split("#");
+        dir         =   dirUrl[0].split("=")[1];
+        reviseURL   =  "../../SubmitDatasetUI/html/SubmitDataset.html?dir="+dir
+        jQuery("#revise").attr('href', reviseURL);
+
+        log.debug(admiral.objectString(window.location));
+        var datasetName = window.location.hash;
+        if( datasetName.length <= 1)
+        {
+             jQuery("#pageLoadStatus").text('No dataset name specified');
+             jQuery("#pageLoadStatus").addClass('error');
+        }
+        else
+        {
+            datasetName = datasetName.slice(1);     // Remove '#'
+            var dataSet = "/admiral-test/datasets/"+datasetName;
+            var m = new admiral.AsyncComputation();
+            m.eval(function (val, callback)
+            {
+               admiral.displayDatasetStatus(dataSet, callback);
+            });
+            m.eval(function (val, callback)
+            {
+               admiral.displayDatasetManifest(dataSet, datasetName, callback);
+            });
+            m.exec(null, admiral.noop);
+        }
+        
+    });
+  </script>  
+
+</head>
+
+<body>
+   <h1>Dataset <a id="datasetLink" href="dummy"><span id="datasetName">...</span></a></h1>
+   <div class="subTitle">Created by <span id="createdBy">...</span></div>
+   <div class="subTitle">Last modified <span id="lastModified">...</span></div>
+   <h2>Status</h2>
+   <div class="dataset">
+     <div id="pageLoadStatus"></div>
+     <br />
+     <table >
+        <tr ><td>Submission identifier &nbsp;</td><td id="submissionIdentifier">...</td></tr>
+        <tr><td>Current version</td><td id="currentVersion">...</td></tr>
+        <tr><td>Embargoed?</td><td id="isEmbargoed">...</td></tr>
+        <tr><td>Embargo expiry date</td><td id ="embargoExpiryDate">...</td></tr>
+        <tr><td>Derived from</td><td><span id="derivedFrom"><a href="dummy">...</a></span></td></tr>
+     </table>
+   </div>
+   <h2>Contents</h2>
+   <div class="manifest">(to be replaced)</div>
+
+   <h3><a href="" id="revise">Submit revised version</a></h3>
+</body>
+
+</html>
