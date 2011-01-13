@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+    <title>ADMIRAL: Data Submission</title>
+
+    <!-- TODO: move to separate CSS file -->
+    <style>
+    td {
+        background-color: #FFE;
+    }
+    </style>
+ 
+    <link rel="stylesheet" href="./../css/SubmitDataset.css" type="text/css" />   
+    
+    <!-- Import jQuery framework -->
+    <script type="text/javascript" src="../../jQuery/js/jquery-1.4.2.js"></script> 
+
+    <!-- Import jQuery additional libraries -->
+    <script type="text/javascript" src="../../jQuery/jquery.json-2.2.js"></script> 
+    
+    <!-- Import treeview plugin -->
+    <link rel="stylesheet" href="../../jQuery/jquery-treeview/jquery.treeview.css" type="text/css" />
+    <script type="text/javascript" src="../../jQuery/jquery-treeview/jquery.treeview.js"></script>
+  
+ 
+    <!-- Import MochiKit modules: require MochiKit library functions to be fully qualified -->
+    <script type="text/javascript">MochiKit = {__export__: false};</script>
+    <script type="text/javascript" src="../../MochiKit/Base.js"></script>
+    <script type="text/javascript" src="../../MochiKit/Iter.js"></script>
+    <script type="text/javascript" src="../../MochiKit/Logging.js"></script>
+
+    <!-- Import Admiral functions -->
+    <script type="text/javascript" src="../../Admiral/admiral-base.js"></script>
+    <script type="text/javascript" src="../../Admiral/Error.js"></script>
+    <script type="text/javascript" src="../../Admiral/AsyncComputation.js"></script>
+    <script type="text/javascript" src="./../js/SubmitDatasetDetails.js"></script>
+    <script type="text/javascript" src="./../js/DirectoryListing.js"></script>
+    <script type="text/javascript" src="./../js/GetDatasetMetadata.js"></script>
+    <script type="text/javascript" src="./../js/DatasetTree.js"></script>
+    <script type="text/javascript" src="../../SelectDataset/ListDatasets.js"></script>
+    <script type="text/javascript" src="../../SelectDataset/GetDatasets.js"></script>
+ 
+    
+    <script>
+    // Use jQuery via jQuery(...)
+    jQuery.noConflict();
+    </script>
+    
+    <script>
+    jQuery(document).ready( function ()
+    {
+       url = document.URL;
+       
+       // Get Dir value from the url to display as default and get metadata information for the dataset dir
+       var pos = url.indexOf("=");
+       var dir="" ;
+       if(pos > 0)
+       {
+         dir= url.slice(url.indexOf("=")+1);
+        //var dir = url.split("=");
+       }
+       admiral.displayFormFieldsFromMetadata(dir);    
+    });
+    </script>
+    
+</head> 
+
+<body>
+    <div>
+        <span id="logo"><a href="/"><img alt="site_logo" src="../../images/ADMIRALogo96x96.png" border="0"/></a></span>
+    </div>
+   <h1>Submit ADMIRAL dataset to Oxford University Databank</h1>
+
+   <h2>Select dataset for submission</h2>
+   <form id="submitForm" name="submitForm" action="../../SubmitDatasetHandler/cgi-bin/SubmitDatasetDetailsHandler.py" method="post">
+   <div class=" outer">  
+        <div class="box">
+           
+            <span class="label">
+                <span class="mainlabel">
+                    Available ADMIRAL Directories :
+                </span>
+                <span class="sublabel">
+                    (Choose one directory from among those shown, by clicking on it.
+                    All files within the chosen directory will be submitted as an ADMIRAL Dataset)
+                </span>
+            </span>
+            
+            <span class="labelvalue">
+                <span class="sublabelvalue">
+                    <input name="datDir" id="datDir" type="text" value="" size="63" />
+                </span>
+                <span class="sublabelvalue">
+                    <span id="dirtreelist"> </span>
+                </span>           
+            </span> 
+        </div>
+        <div class="box">
+           <span class="label">
+                 <span class="mainlabel">
+                       Databank dataset identifier:
+                 </span>
+                 <span class="sublabel">
+                        (Enter a unique identifier to be used for the Databank dataset.
+                        This defaults to the directory name, but another identifier may be entered.
+                 </span>
+                 <span class="sublabel">
+                        May contain alphanumeric characters and  .  _  : and  - but no spaces or commas.)
+                 </span>
+           </span>
+           <span class="labelvalue">                 
+                 <span class="sublabelvalue">
+                    <input name="datId" id="datId" type="text"/>
+                 </span>
+           </span>
+        </div>
+        <div class="box">
+           <span class="label">
+                 <span class="mainlabel">
+                    Title for dataset:
+                 </span>
+                 <span class="sublabel">
+                        (Enter title for dataset)
+                 </span>
+           </span>
+           <span class="labelvalue">
+             <span class="sublabelvalue">
+                <input name="title" id="title" type="text" size="63" />
+             </span>
+           </span>
+        </div>
+        <div class="box">
+           <span class="label">
+               <span class="mainlabel">
+                    Description for dataset :
+               </span>   
+               <span class="sublabel">
+                    (Enter brief description)
+               </span>  
+           </span>
+           <span class="labelvalue">
+                <span class="sublabelvalue">
+                    <textarea rows="4"  cols="50" id="description" name="description"></textarea>
+                </span>
+           </span>
+        </div>
+        <div class="box">
+            <span class="labelvalue">
+                <button  name="cancel" id="cancel" type="button"> Cancel </button>
+                <input name="submit" id="submit" type="submit" value="Next"/>
+           </span>
+        </div>
+   </div>
+</form>  
+</body>
+</html>
+
