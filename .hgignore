@@ -1,0 +1,27 @@
+# use glob syntax.
+syntax: glob
+*.elc
+*.pyc
+*.tmp
+*.log
+*.bak
+*.tmproj
+.DS_Store
+*~
+
+# switch to regexp syntax.
+#syntax: regexp
+#^\.pc/
+
+syntax: regexp
+^\.pydevproject$
+
+syntax: regexp
+^\.settings/org\.eclipse\.ltk\.core\.refactoring\.prefs$
+
+syntax: regexp
+\.zip$
+syntax: regexp
+^src/SubmitDatasetHandler/tests/DatasetsSecondDir/manifest\.rdf$
+syntax: regexp
+^src/SubmitDatasetHandler/tests/DatasetsTopDir/manifest\.rdf$
