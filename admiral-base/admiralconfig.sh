@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# ADMIRAL system parameters
+# (see also apache-default and apache-default-ssl)
+
+RGLeaderGID=600
+RGMemberGID=601
+RGCollabGID=602
+RGOrphanGID=603
+
+RESEARCHGROUPNAME="%{RESEARCHGROUPNAME}"
+ADMIRALHOSTNAME="%{HOSTNAME}"
+SAMBAWORKGROUP="%{WORKGROUP}"
+DATABANKHOST="%{DATABANKHOST}"
+DATABANKSILO="%{DATABANKSILO}"
