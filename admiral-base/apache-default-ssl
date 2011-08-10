@@ -54,8 +54,8 @@
         AuthType Basic
         AuthBasicProvider ldap
         AuthzLDAPAuthoritative on
-        AuthLDAPURL "ldap://%{HOSTNAME}.zoo.ox.ac.uk:389/dc=%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk"
-        AuthLDAPBindDN "cn=admin,dc=%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk"
+        AuthLDAPURL "ldap://%{HOSTFULLNAME}:389/%{ADMIRALFULLDN}"
+        AuthLDAPBindDN "cn=admin,%{ADMIRALFULLDN}"
         AuthLDAPBindPassword "%{PASSWORD}"
     </Location>
     
@@ -85,8 +85,8 @@
         AuthType Basic
         AuthBasicProvider ldap
         AuthzLDAPAuthoritative on
-        AuthLDAPURL "ldap://%{HOSTNAME}.zoo.ox.ac.uk:389/dc=%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk"
-        AuthLDAPBindDN "cn=admin,dc=%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk"
+        AuthLDAPURL "ldap://%{HOSTFULLNAME}:389/%{ADMIRALFULLDN}"
+        AuthLDAPBindDN "cn=admin,%{ADMIRALFULLDN}"
         AuthLDAPBindPassword "%{PASSWORD}"
     </Location>
     
@@ -116,9 +116,9 @@
         AuthType Basic
         AuthBasicProvider ldap
         AuthzLDAPAuthoritative on
-        AuthLDAPURL "ldap://%{HOSTNAME}:389/dc=%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk"
-        AuthLDAPBindDN "cn=admin,%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk"
-        AuthLDAPBindPassword "pix89=fleet"
+        AuthLDAPURL "ldap://%{HOSTFULLNAME}:389/%{ADMIRALFULLDN}"
+        AuthLDAPBindDN "cn=admin,%{ADMIRALFULLDN}"
+        AuthLDAPBindPassword "%{PASSWORD}"
     </Location>
 
     <Location /test>
