@@ -8,7 +8,7 @@ if [ -z $1 ]; then
     exit
 fi
 
-ldapadd -x -D cn=admin,dc=%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk -W -f $1
+ldapadd -x -D cn=admin,%{ADMIRALFULLDN} -W -f $1
 #cn=admin,cn=config 
 
 # End.

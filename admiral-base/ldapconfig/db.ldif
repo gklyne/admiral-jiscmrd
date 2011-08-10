@@ -13,8 +13,8 @@ objectClass: olcDatabaseConfig
 objectClass: olcHdbConfig
 olcDatabase: {1}hdb
 olcDbDirectory: /var/lib/ldap
-olcSuffix: dc=%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk
-olcRootDN: cn=admin,dc=%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk
+olcSuffix: %{ADMIRALFULLDN}
+olcRootDN: cn=admin,%{ADMIRALFULLDN}
 # This is the password that subsequently controls access for adding users
 olcRootPW: %{MD5PASS}
 olcDbConfig: {0}set_cachesize 0 2097152 0
