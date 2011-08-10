@@ -1,4 +1,4 @@
-dn: cn=admin,dc=%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk
+dn: cn=admin,%{ADMIRALFULLDN}
 objectClass: simpleSecurityObject
 objectClass: organizationalRole
 cn: admin

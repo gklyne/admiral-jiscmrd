@@ -8,6 +8,6 @@ if [ -z $1 ]; then
     exit
 fi
 
-ldapdelete -x -D cn=admin,dc=%{HOSTNAME},dc=zoo,dc=ox,dc=ac,dc=uk -W $1
+ldapdelete -x -D cn=admin,%{ADMIRALFULLDN} -W $1
 
 # End.
