@@ -75,7 +75,7 @@ REPORT=":"
 MD5PASSWD=`slappasswd -h {MD5} -s $PASSWORD`
 
 if [[ "$IPADDR" == "" ]]; then
-    IP=`host $HOSTNAME | cut -d ' ' -f4`
+    IP=`host $HOSTFULLNAME | cut -d ' ' -f4`
 else
     IP=$IPADDR
 fi
